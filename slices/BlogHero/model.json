@@ -1,0 +1,77 @@
+{
+  "type": "SharedSlice",
+  "id": "article_header",
+  "name": "BlogHero",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Standard article header for editorial content.",
+      "version": "initial",
+      "imageUrl": "",
+      "docURL": "...",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading1"
+          }
+        },
+        "header_image": {
+          "type": "Image",
+          "config": {
+            "label": "Header Image"
+          }
+        },
+        "author": {
+          "type": "Link",
+          "config": {
+            "label": "author",
+            "select": "document",
+            "repeat": false,
+            "customtypes": [
+              {
+                "id": "author",
+                "fields": [
+                  "name",
+                  "avatar",
+                  "position"
+                ]
+              }
+            ]
+          }
+        },
+        "category": {
+          "type": "Select",
+          "config": {
+            "label": "Category",
+            "placeholder": "",
+            "options": [
+              "Banking & Finance",
+              "Accounting",
+              "Spend Management",
+              "Invoice Management",
+              "AI & Intelligence"
+            ]
+          }
+        },
+        "published_date": {
+          "type": "Date",
+          "config": {
+            "label": "Published Date"
+          }
+        },
+        "reading_time": {
+          "type": "Text",
+          "config": {
+            "label": "Reading Time"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
