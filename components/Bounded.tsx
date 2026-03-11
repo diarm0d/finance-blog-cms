@@ -14,7 +14,7 @@ export default async function Bounded({
 }: BoundedProps) {
   return (
     <Comp
-      className={clsx("mx-auto my-4 md:my-6", className)}
+      className={clsx("mx-2 md:mx-auto my-4 md:my-6", className)}
       {...rest}
     >
       <div className="mx-auto w-full max-w-xl">{children}</div>
