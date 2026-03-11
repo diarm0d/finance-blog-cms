@@ -18,8 +18,8 @@ export type BlogHeroProps = SliceComponentProps<Content.ArticleHeaderSlice>;
  */
 const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
   const author = slice.primary.author;
-  const categoryParam = slice.primary.blog_category?.toString() || undefined;
-  const date = asDate(slice.primary.published_date) || Date()
+  const category = slice.primary.blog_category;
+  const date = asDate(slice.primary.published_date) || Date();
   const formattedDate = new Date(date)
     .toLocaleDateString("en-US", {
       month: "long",
@@ -33,7 +33,14 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
     >
       <Breadcrumbs
-        category={categoryParam}
+        categoryName={
+          isFilled.contentRelationship(category)
+            ? (category.data?.name as string)
+            : undefined
+        }
+        categoryUid={
+          isFilled.contentRelationship(category) ? category.uid : undefined
+        }
         categoryParamName="category"
         className="text-sm mb-4"
       />
@@ -63,7 +70,9 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
               </div>
             </div>
             <div className="flex items-end gap-4 text-xs text-gray-400 font-semibold">
-              <span className="uppercase">{slice.primary.blog_category.data.name}</span>
+              <span className="uppercase">
+                {isFilled.contentRelationship(category) && category.data?.name}
+              </span>
               <span className="uppercase">{formattedDate}</span>
               <span className="uppercase">
                 {slice.primary.reading_time} MIN READ

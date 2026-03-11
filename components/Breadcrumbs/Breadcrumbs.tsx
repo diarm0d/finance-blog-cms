@@ -5,19 +5,22 @@ import { ChevronRight } from "lucide-react";
 import clsx from "clsx";
 
 type Props = {
-  category?: string;
+  categoryName?: string;
+  categoryUid?: string;
   categoryParamName?: string;
   className?: string;
 };
 
 export function Breadcrumbs({
-  category,
+  categoryName,
+  categoryUid,
   categoryParamName,
   className,
   ...rest
 }: Props) {
   const crumbs = useBreadcrumbs({
-    category,
+    categoryName,
+    categoryUid,
     categoryParamName: "category",
     labels: {
       blog: "Overview",
@@ -30,12 +33,12 @@ export function Breadcrumbs({
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;
 
-          if (isLast && category && categoryParamName) {
+          if (isLast && categoryName && categoryUid && categoryParamName) {
             const prevCrumb = crumbs[index - 1];
             const baseHref = prevCrumb ? prevCrumb.href : crumb.href;
 
             const search = new URLSearchParams({
-              [categoryParamName]: category,
+              [categoryParamName]: categoryUid,
             }).toString();
 
             const categoryHref = `${baseHref}?${search}`;
@@ -45,7 +48,7 @@ export function Breadcrumbs({
                 key={crumb.href}
                 className="flex items-center gap-2 hover:text-gray-600"
               >
-                <Link href={categoryHref}>{category}</Link>
+                <Link href={categoryHref}>{categoryName}</Link>
               </li>
             );
           }

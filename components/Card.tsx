@@ -4,6 +4,7 @@ import Pill from "./Pill";
 import Button from "./Button";
 import Heading from "./Heading";
 import { ImageField } from "@prismicio/client";
+import Link from "next/link";
 
 export interface CardProps {
   className?: string;
@@ -34,7 +35,8 @@ export default function Card({
   image,
 }: CardProps) {
   return (
-    <div
+    <Link
+      href={href}
       className={clsx(
         "font-semibold rounded-sm inline-block bg-white border border-gray-200",
         size === "lg" && "text-md px-3 py-3.5",
@@ -66,11 +68,13 @@ export default function Card({
         <Heading size="md" className="text-lg mb-4">
           {title}
         </Heading>
-        <div className="mb-4 font-medium text-sm text-gray-500">{description}</div>
+        <div className="mb-4 font-medium text-sm text-gray-500">
+          {description}
+        </div>
         <Button variant="primary" href={href}>
           {buttonCta}
         </Button>
       </div>
-    </div>
+    </Link>
   );
 }
