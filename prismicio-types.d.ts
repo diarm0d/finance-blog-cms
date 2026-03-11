@@ -184,7 +184,75 @@ export type BlogPageDocument<Lang extends string = string> =
     Lang
   >;
 
-export type AllDocumentTypes = AuthorDocument | BlogPageDocument;
+/**
+ * Content for Global Settings documents
+ */
+interface GlobalSettingsDocumentData {
+  /**
+   * Site Title field in *Global Settings*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Moss
+   * - **API ID Path**: global_settings.site_title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  site_title: prismic.KeyTextField;
+
+  /**
+   * Site Description field in *Global Settings*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_description
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  site_description: prismic.KeyTextField;
+
+  /**
+   * Site Image field in *Global Settings*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_image
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  site_image: prismic.ImageField<never>;
+
+  /**
+   * Site Structured Data field in *Global Settings*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_structured_data
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  site_structured_data: prismic.RichTextField;
+}
+
+/**
+ * Global Settings document from Prismic
+ *
+ * - **API ID**: `global_settings`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type GlobalSettingsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<GlobalSettingsDocumentData>,
+    "global_settings",
+    Lang
+  >;
+
+export type AllDocumentTypes =
+  | AuthorDocument
+  | BlogPageDocument
+  | GlobalSettingsDocument;
 
 /**
  * Primary content in *BlogBody → Default → Primary*
@@ -360,6 +428,8 @@ declare module "@prismicio/client" {
       BlogPageDocument,
       BlogPageDocumentData,
       BlogPageDocumentDataSlicesSlice,
+      GlobalSettingsDocument,
+      GlobalSettingsDocumentData,
       AllDocumentTypes,
       ArticleBodySlice,
       ArticleBodySliceDefaultPrimary,
