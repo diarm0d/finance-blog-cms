@@ -2,4 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-export const components = {};
+export const components = {
+  article_body: dynamic(() => import("./BlogBody")),
+  article_header: dynamic(() => import("./BlogHero")),
+};
