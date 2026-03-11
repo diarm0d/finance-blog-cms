@@ -28,6 +28,34 @@
       }
     },
     "SEO & Metadata": {
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "Title",
+          "placeholder": ""
+        }
+      },
+      "snippet": {
+        "type": "Text",
+        "config": {
+          "label": "Snippet",
+          "placeholder": ""
+        }
+      },
+      "category": {
+        "type": "Link",
+        "config": {
+          "label": "Category",
+          "select": "document",
+          "repeat": false,
+          "customtypes": [
+            {
+              "id": "category",
+              "fields": ["name"]
+            }
+          ]
+        }
+      },
       "meta_title": {
         "config": {
           "label": "Meta Title",

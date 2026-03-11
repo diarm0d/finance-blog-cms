@@ -119,6 +119,71 @@ interface AuthorDocumentData {
 export type AuthorDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<AuthorDocumentData>, "author", Lang>;
 
+type BlogHomeDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Blog Home documents
+ */
+interface BlogHomeDocumentData {
+  /**
+   * Slice Zone field in *Blog Home*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<BlogHomeDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Blog Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: blog_home.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Blog Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: blog_home.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Blog Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Blog Home document from Prismic
+ *
+ * - **API ID**: `blog_home`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BlogHomeDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<BlogHomeDocumentData>,
+    "blog_home",
+    Lang
+  >;
+
 type BlogPageDocumentDataSlicesSlice = ArticleBodySlice | ArticleHeaderSlice;
 
 /**
@@ -135,6 +200,41 @@ interface BlogPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<BlogPageDocumentDataSlicesSlice>; /**
+   * Title field in *Blog Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Snippet field in *Blog Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.snippet
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  snippet: prismic.KeyTextField;
+
+  /**
+   * Category field in *Blog Page*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.category
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  category: ContentRelationshipFieldWithData<
+    [{ id: "category"; fields: ["name"] }]
+  >;
+
+  /**
    * Meta Title field in *Blog Page*
    *
    * - **Field Type**: Text
@@ -181,6 +281,38 @@ export type BlogPageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<
     Simplify<BlogPageDocumentData>,
     "blog_page",
+    Lang
+  >;
+
+/**
+ * Content for Category documents
+ */
+interface CategoryDocumentData {
+  /**
+   * Name field in *Category*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: category.name
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  name: prismic.KeyTextField;
+}
+
+/**
+ * Category document from Prismic
+ *
+ * - **API ID**: `category`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CategoryDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CategoryDocumentData>,
+    "category",
     Lang
   >;
 
@@ -251,7 +383,9 @@ export type GlobalSettingsDocument<Lang extends string = string> =
 
 export type AllDocumentTypes =
   | AuthorDocument
+  | BlogHomeDocument
   | BlogPageDocument
+  | CategoryDocument
   | GlobalSettingsDocument;
 
 /**
@@ -336,22 +470,6 @@ export interface ArticleHeaderSliceDefaultPrimary {
   >;
 
   /**
-   * Category field in *BlogHero → Default → Primary*
-   *
-   * - **Field Type**: Select
-   * - **Placeholder**: *None*
-   * - **API ID Path**: article_header.default.primary.category
-   * - **Documentation**: https://prismic.io/docs/fields/select
-   */
-  category: prismic.SelectField<
-    | "Banking & Finance"
-    | "Accounting"
-    | "Spend Management"
-    | "Invoice Management"
-    | "AI & Intelligence"
-  >;
-
-  /**
    * Published Date field in *BlogHero → Default → Primary*
    *
    * - **Field Type**: Date
@@ -370,6 +488,18 @@ export interface ArticleHeaderSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   reading_time: prismic.KeyTextField;
+
+  /**
+   * Blog Category field in *BlogHero → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_header.default.primary.blog_category
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  blog_category: ContentRelationshipFieldWithData<
+    [{ id: "category"; fields: ["name"] }]
+  >;
 }
 
 /**
@@ -425,9 +555,14 @@ declare module "@prismicio/client" {
     export type {
       AuthorDocument,
       AuthorDocumentData,
+      BlogHomeDocument,
+      BlogHomeDocumentData,
+      BlogHomeDocumentDataSlicesSlice,
       BlogPageDocument,
       BlogPageDocumentData,
       BlogPageDocumentDataSlicesSlice,
+      CategoryDocument,
+      CategoryDocumentData,
       GlobalSettingsDocument,
       GlobalSettingsDocumentData,
       AllDocumentTypes,

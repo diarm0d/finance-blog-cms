@@ -20,7 +20,7 @@ export const repositoryName =
 // TODO: Update the routes array to match your project's route structure.
 const routes: Route[] = [
   // Examples:
-  // { type: "Blog_home", path: "/blog" },
+  { type: "blog_home", path: "/blog" },
   { type: "blog_page", path: "/blog/:uid" },
 ];
 
@@ -36,7 +36,7 @@ export const createClient = (config: ClientConfig = {}) => {
     fetchOptions:
       process.env.NODE_ENV === "production"
         ? { next: { tags: ["prismic"] }, cache: "force-cache" }
-        : { next: { revalidate: 60 } },
+        : { next: { revalidate: 1 } },
     ...config,
   });
 

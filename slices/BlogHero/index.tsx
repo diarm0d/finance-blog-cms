@@ -18,7 +18,7 @@ export type BlogHeroProps = SliceComponentProps<Content.ArticleHeaderSlice>;
  */
 const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
   const author = slice.primary.author;
-  const categoryParam = slice.primary.category?.toString() || undefined;
+  const categoryParam = slice.primary.blog_category?.toString() || undefined;
   const date = asDate(slice.primary.published_date) || Date()
   const formattedDate = new Date(date)
     .toLocaleDateString("en-US", {
@@ -63,7 +63,7 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
               </div>
             </div>
             <div className="flex items-end gap-4 text-xs text-gray-400 font-semibold">
-              <span className="uppercase">{slice.primary.category}</span>
+              <span className="uppercase">{slice.primary.blog_category.data.name}</span>
               <span className="uppercase">{formattedDate}</span>
               <span className="uppercase">
                 {slice.primary.reading_time} MIN READ

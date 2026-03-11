@@ -1,7 +1,6 @@
 import { Portal } from "@ark-ui/react/portal";
-import { Select, createListCollection } from "@ark-ui/react/select";
+import { Select as ArkSelect, createListCollection } from "@ark-ui/react/select";
 import { ChevronsUpDownIcon, XIcon } from "lucide-react";
-import styles from "./index.module.css";
 
 const frameworks = createListCollection({
   items: [
@@ -12,49 +11,48 @@ const frameworks = createListCollection({
   ],
 });
 
-export const Basic = () => {
+export const Select = () => {
   return (
-    <Select.Root className={styles.Root} collection={frameworks}>
-      <Select.Label className={styles.Label}>Framework</Select.Label>
-      <Select.Control className={styles.Control}>
-        <Select.Trigger className={styles.Trigger}>
-          <Select.ValueText className={styles.ValueText} placeholder="Select" />
-        </Select.Trigger>
-        <div className={styles.Indicators}>
-          <Select.ClearTrigger className={styles.ClearTrigger}>
+    <ArkSelect.Root collection={frameworks}>
+      <ArkSelect.Label >Framework</ArkSelect.Label>
+      <ArkSelect.Control >
+        <ArkSelect.Trigger >
+          <ArkSelect.ValueText placeholder="ArkSelect" />
+        </ArkSelect.Trigger>
+        <div>
+          <ArkSelect.ClearTrigger >
             <XIcon />
-          </Select.ClearTrigger>
-          <Select.Indicator className={styles.Indicator}>
+          </ArkSelect.ClearTrigger>
+          <ArkSelect.Indicator>
             <ChevronsUpDownIcon />
-          </Select.Indicator>
+          </ArkSelect.Indicator>
         </div>
-      </Select.Control>
+      </ArkSelect.Control>
       <Portal>
-        <Select.Positioner>
-          <Select.Content className={styles.Content}>
-            <Select.ItemGroup className={styles.ItemGroup}>
-              <Select.ItemGroupLabel className={styles.ItemGroupLabel}>
+        <ArkSelect.Positioner>
+          <ArkSelect.Content >
+            <ArkSelect.ItemGroup >
+              <ArkSelect.ItemGroupLabel>
                 Frameworks
-              </Select.ItemGroupLabel>
+              </ArkSelect.ItemGroupLabel>
               {frameworks.items.map((item) => (
-                <Select.Item
-                  className={styles.Item}
+                <ArkSelect.Item
                   key={item.value}
                   item={item}
                 >
-                  <Select.ItemText className={styles.ItemText}>
+                  <ArkSelect.ItemText>
                     {item.label}
-                  </Select.ItemText>
-                  <Select.ItemIndicator className={styles.ItemIndicator}>
+                  </ArkSelect.ItemText>
+                  <ArkSelect.ItemIndicator>
                     ✓
-                  </Select.ItemIndicator>
-                </Select.Item>
+                  </ArkSelect.ItemIndicator>
+                </ArkSelect.Item>
               ))}
-            </Select.ItemGroup>
-          </Select.Content>
-        </Select.Positioner>
+            </ArkSelect.ItemGroup>
+          </ArkSelect.Content>
+        </ArkSelect.Positioner>
       </Portal>
-      <Select.HiddenSelect />
-    </Select.Root>
+      <ArkSelect.HiddenSelect />
+    </ArkSelect.Root>
   );
 };

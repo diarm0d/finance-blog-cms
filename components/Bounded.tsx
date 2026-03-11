@@ -6,7 +6,7 @@ type BoundedProps = {
   children: React.ReactNode;
 };
 
-export default async function Bounded({
+export default function Bounded({
   as: Comp = "section",
   className,
   children,

@@ -18,12 +18,12 @@ export default function Pill({
   return (
     <Comp
       className={clsx(
-        "font-semibold rounded-lg inline-block",
-        size === "lg" && "text-md px-3 py-3.5",
-        size === "md" && "text-sm px-2 py-2.5",
-        size === "sm" && "text-xs px-1 py-1.5",
+        "font-semibold rounded-sm inline-block",
+        size === "lg" && "text-md px-3.5 py-3",
+        size === "md" && "text-sm px-2.5 py-2",
+        size === "sm" && "text-xs px-1.5 py-1",
         variant === "featured" && "bg-blue-400 text-white",
-        variant === "category" && "bg-cyan-300 text-blue-600",
+        variant === "category" && "bg-blue-100 text-blue-600",
         className,
       )}
     >
