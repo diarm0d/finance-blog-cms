@@ -119,6 +119,147 @@ interface AuthorDocumentData {
 export type AuthorDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<AuthorDocumentData>, "author", Lang>;
 
+type BlogHomeDocumentDataSlicesSlice = never;
+
+/**
+ * Item in *Blog Home → Featured Blogs*
+ */
+export interface BlogHomeDocumentDataFeaturedBlogsItem {
+  /**
+   * Featured field in *Blog Home → Featured Blogs*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.featured_blogs[].featured
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  featured: ContentRelationshipFieldWithData<
+    [
+      {
+        id: "blog_page";
+        fields: [
+          "title",
+          "snippet",
+          {
+            id: "category";
+            customtypes: [{ id: "category"; fields: ["name"] }];
+          },
+          "meta_image",
+        ];
+      },
+    ]
+  >;
+}
+
+/**
+ * Content for Blog Home documents
+ */
+interface BlogHomeDocumentData {
+  /**
+   * Slice Zone field in *Blog Home*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<BlogHomeDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Blog Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: blog_home.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Blog Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: blog_home.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Blog Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+
+  /**
+   * Title field in *Blog Home*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Caption field in *Blog Home*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.caption
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  caption: prismic.RichTextField;
+
+  /**
+   * Pagination Title field in *Blog Home*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.pagination_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  pagination_title: prismic.RichTextField;
+
+  /**
+   * Featured Blogs field in *Blog Home*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_home.featured_blogs[]
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  featured_blogs: prismic.GroupField<
+    Simplify<BlogHomeDocumentDataFeaturedBlogsItem>
+  >;
+}
+
+/**
+ * Blog Home document from Prismic
+ *
+ * - **API ID**: `blog_home`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BlogHomeDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<BlogHomeDocumentData>,
+    "blog_home",
+    Lang
+  >;
+
 type BlogPageDocumentDataSlicesSlice = ArticleBodySlice | ArticleHeaderSlice;
 
 /**
@@ -135,6 +276,41 @@ interface BlogPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/slices
    */
   slices: prismic.SliceZone<BlogPageDocumentDataSlicesSlice>; /**
+   * Title field in *Blog Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Snippet field in *Blog Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.snippet
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  snippet: prismic.KeyTextField;
+
+  /**
+   * Category field in *Blog Page*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.category
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  category: ContentRelationshipFieldWithData<
+    [{ id: "category"; fields: ["name"] }]
+  >;
+
+  /**
    * Meta Title field in *Blog Page*
    *
    * - **Field Type**: Text
@@ -184,7 +360,171 @@ export type BlogPageDocument<Lang extends string = string> =
     Lang
   >;
 
-export type AllDocumentTypes = AuthorDocument | BlogPageDocument;
+/**
+ * Content for Category documents
+ */
+interface CategoryDocumentData {
+  /**
+   * Name field in *Category*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: category.name
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  name: prismic.KeyTextField;
+}
+
+/**
+ * Category document from Prismic
+ *
+ * - **API ID**: `category`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CategoryDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CategoryDocumentData>,
+    "category",
+    Lang
+  >;
+
+/**
+ * Content for Global Settings documents
+ */
+interface GlobalSettingsDocumentData {
+  /**
+   * Site Title field in *Global Settings*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Moss
+   * - **API ID Path**: global_settings.site_title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  site_title: prismic.KeyTextField;
+
+  /**
+   * Site Description field in *Global Settings*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_description
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  site_description: prismic.KeyTextField;
+
+  /**
+   * Site Image field in *Global Settings*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_image
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  site_image: prismic.ImageField<never>;
+
+  /**
+   * Site Structured Data field in *Global Settings*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: global_settings.site_structured_data
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  site_structured_data: prismic.RichTextField;
+}
+
+/**
+ * Global Settings document from Prismic
+ *
+ * - **API ID**: `global_settings`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type GlobalSettingsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<GlobalSettingsDocumentData>,
+    "global_settings",
+    Lang
+  >;
+
+type HomeDocumentDataSlicesSlice = ArticleBodySlice;
+
+/**
+ * Content for Home documents
+ */
+interface HomeDocumentData {
+  /**
+   * Slice Zone field in *Home*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<HomeDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: home.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: home.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Home document from Prismic
+ *
+ * - **API ID**: `home`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type HomeDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
+
+export type AllDocumentTypes =
+  | AuthorDocument
+  | BlogHomeDocument
+  | BlogPageDocument
+  | CategoryDocument
+  | GlobalSettingsDocument
+  | HomeDocument;
 
 /**
  * Primary content in *BlogBody → Default → Primary*
@@ -268,22 +608,6 @@ export interface ArticleHeaderSliceDefaultPrimary {
   >;
 
   /**
-   * Category field in *BlogHero → Default → Primary*
-   *
-   * - **Field Type**: Select
-   * - **Placeholder**: *None*
-   * - **API ID Path**: article_header.default.primary.category
-   * - **Documentation**: https://prismic.io/docs/fields/select
-   */
-  category: prismic.SelectField<
-    | "Banking & Finance"
-    | "Accounting"
-    | "Spend Management"
-    | "Invoice Management"
-    | "AI & Intelligence"
-  >;
-
-  /**
    * Published Date field in *BlogHero → Default → Primary*
    *
    * - **Field Type**: Date
@@ -302,6 +626,18 @@ export interface ArticleHeaderSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   reading_time: prismic.KeyTextField;
+
+  /**
+   * Blog Category field in *BlogHero → Default → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: article_header.default.primary.blog_category
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  blog_category: ContentRelationshipFieldWithData<
+    [{ id: "category"; fields: ["name"] }]
+  >;
 }
 
 /**
@@ -357,9 +693,20 @@ declare module "@prismicio/client" {
     export type {
       AuthorDocument,
       AuthorDocumentData,
+      BlogHomeDocument,
+      BlogHomeDocumentData,
+      BlogHomeDocumentDataSlicesSlice,
+      BlogHomeDocumentDataFeaturedBlogsItem,
       BlogPageDocument,
       BlogPageDocumentData,
       BlogPageDocumentDataSlicesSlice,
+      CategoryDocument,
+      CategoryDocumentData,
+      GlobalSettingsDocument,
+      GlobalSettingsDocumentData,
+      HomeDocument,
+      HomeDocumentData,
+      HomeDocumentDataSlicesSlice,
       AllDocumentTypes,
       ArticleBodySlice,
       ArticleBodySliceDefaultPrimary,

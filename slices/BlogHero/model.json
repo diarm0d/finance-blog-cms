@@ -44,20 +44,6 @@
             ]
           }
         },
-        "category": {
-          "type": "Select",
-          "config": {
-            "label": "Category",
-            "placeholder": "",
-            "options": [
-              "Banking & Finance",
-              "Accounting",
-              "Spend Management",
-              "Invoice Management",
-              "AI & Intelligence"
-            ]
-          }
-        },
         "published_date": {
           "type": "Date",
           "config": {
@@ -68,6 +54,22 @@
           "type": "Text",
           "config": {
             "label": "Reading Time"
+          }
+        },
+        "blog_category": {
+          "type": "Link",
+          "config": {
+            "label": "Blog Category",
+            "select": "document",
+            "repeat": false,
+            "customtypes": [
+              {
+                "id": "category",
+                "fields": [
+                  "name"
+                ]
+              }
+            ]
           }
         }
       },
