@@ -1,0 +1,21 @@
+services:
+  finance-blog-cms-staging:
+    build:
+      context: ../../
+      dockerfile: docker/staging/Dockerfile
+      secrets:
+        - env-file
+    image: finance-blog-cms-staging
+    ports:
+      - "3002:3000"
+    env_file:
+      - ../../.env.staging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+secrets:
+  env-file:
+    file: ../../.env.staging
