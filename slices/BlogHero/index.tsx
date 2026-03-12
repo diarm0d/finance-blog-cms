@@ -33,13 +33,9 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
     >
       <Breadcrumbs
-        categoryName={
-          isFilled.contentRelationship(category)
-            ? (category.data?.name as string)
-            : undefined
-        }
-        categoryUid={
-          isFilled.contentRelationship(category) ? category.uid : undefined
+        category={
+          (isFilled.contentRelationship(category) && category.data?.name) ||
+          undefined
         }
         categoryParamName="category"
         className="text-sm mb-4"

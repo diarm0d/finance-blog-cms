@@ -9,7 +9,7 @@ type Props = {
 
 const BlogList = ({blogPosts}: Props) => {
   return (
-    <Grid>
+    <Grid className="min-h-96">
       {blogPosts.results.map((post) => {
         const category =
           (isFilled.contentRelationship(post.data.category) &&

@@ -20,35 +20,36 @@ function capitalize(value: string) {
 }
 
 export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
-  const { labels = {}, category, categoryParamName = "category" } = options;
-  const pathname = usePathname();
+  const { labels = {}, category, categoryParamName = 'category' } = options
+  const pathname = usePathname()
 
   return useMemo(() => {
-    if (!pathname) return [];
+    if (!pathname) return []
 
-    const segments = pathname.split("/").filter(Boolean);
+    const segments = pathname.split('/').filter(Boolean)
 
-    const crumbs: Crumb[] = [];
+    const crumbs: Crumb[] = []
 
     segments.forEach((segment, index) => {
-      const isLast = index === segments.length - 1;
+      const isLast = index === segments.length - 1
 
-      let href = "/" + segments.slice(0, index + 1).join("/");
+      let href = '/' + segments.slice(0, index + 1).join('/')
 
       if (isLast && category) {
         const search = new URLSearchParams({
           [categoryParamName]: category,
-        }).toString();
-        href = `${href}?${search}`;
+        }).toString()
+        href = `${href}?${search}`
       }
 
-      const baseLabel = labels[segment] ?? segment.replace(/-/g, " ");
+      const baseLabel = labels[segment] ?? segment.replace(/-/g, ' ')
 
-      const label = isLast && category ? category : capitalize(baseLabel);
+      const label =
+        isLast && category ? category : capitalize(baseLabel)
 
-      crumbs.push({ label, href, isLast });
-    });
+      crumbs.push({ label, href, isLast })
+    })
 
-    return crumbs;
-  }, [pathname, labels, category, categoryParamName]);
+    return crumbs
+  }, [pathname, labels, category, categoryParamName])
 }
