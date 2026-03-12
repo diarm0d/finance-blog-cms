@@ -40,15 +40,26 @@ export default function Card({
     <Link
       href={href}
       className={clsx(
-        "font-semibold rounded-sm inline-block bg-white border border-gray-200  hover:bg-gray-50",
+        "font-semibold rounded-sm inline-block bg-white border border-gray-200 ease-in-out hover:bg-gray-50 focus:scale-95",
         size === "lg" && "text-md px-3 py-3.5",
         size === "md" && "text-sm px-2 py-2.5",
         className,
       )}
     >
       <div>
-        <div className="mb-4">
-          <PrismicNextImage field={image} className="rounded-sm" />
+        <div className="relative aspect-video w-full overflow-hidden bg-gray-200 mb-4">
+          <PrismicNextImage
+            field={image}
+            className="rounded-sm object-cover"
+            fill
+            imgixParams={{
+              ar: "16:9",
+              fit: "crop",
+              auto: ["format", "compress"],
+              q: 80,
+            }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 30vw"
+          />
         </div>
         <div className="mb-4">
           {variant === "primary" ? (
@@ -73,10 +84,7 @@ export default function Card({
         <div className="mb-4 font-medium text-sm text-gray-500">
           {description}
         </div>
-        <Button
-          variant="primary"
-          href={href}
-        >
+        <Button variant="primary" href={href}>
           {buttonCta}
         </Button>
       </div>

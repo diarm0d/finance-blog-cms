@@ -17,7 +17,6 @@
 }
 
 body {
-  background: var(--color-gray-100);
-  color: var(--foreground);
+  background: oklch(96.7% 0.003 264.542);
   font-family: "Systemia Test", sans-serif;
 }

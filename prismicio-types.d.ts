@@ -342,6 +342,84 @@ interface BlogPageDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
+
+  /**
+   * Follow field in *Blog Page*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: blog_page.follow
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  follow: prismic.BooleanField;
+
+  /**
+   * index field in *Blog Page*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: true
+   * - **API ID Path**: blog_page.index
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  index: prismic.BooleanField;
+
+  /**
+   * Canonical field in *Blog Page*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.canonical
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  canonical: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Structured Data field in *Blog Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.structured_data
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  structured_data: prismic.KeyTextField;
+
+  /**
+   * Author field in *Blog Page*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.author
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  author: ContentRelationshipFieldWithData<
+    [{ id: "author"; fields: ["name", "position", "avatar"] }]
+  >;
+
+  /**
+   * Content Type field in *Blog Page*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: blog_page.content_type
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  content_type: ContentRelationshipFieldWithData<
+    [{ id: "category"; fields: ["name"] }]
+  >;
 }
 
 /**
