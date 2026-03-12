@@ -10,8 +10,7 @@ type Crumb = {
 
 export type UseBreadcrumbsOptions = {
   labels?: Record<string, string>;
-  categoryName?: string;
-  categoryUid?: string;
+  category?: string;
   categoryParamName?: string;
 };
 
@@ -21,12 +20,7 @@ function capitalize(value: string) {
 }
 
 export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
-  const {
-    labels = {},
-    categoryName,
-    categoryUid,
-    categoryParamName = "category",
-  } = options;
+  const { labels = {}, category, categoryParamName = "category" } = options;
   const pathname = usePathname();
 
   return useMemo(() => {
@@ -41,20 +35,20 @@ export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
 
       let href = "/" + segments.slice(0, index + 1).join("/");
 
-      if (isLast && categoryUid) {
+      if (isLast && category) {
         const search = new URLSearchParams({
-          [categoryParamName]: categoryUid,
+          [categoryParamName]: category,
         }).toString();
         href = `${href}?${search}`;
       }
 
       const baseLabel = labels[segment] ?? segment.replace(/-/g, " ");
 
-      const label = isLast && categoryName ? categoryName : capitalize(baseLabel);
+      const label = isLast && category ? category : capitalize(baseLabel);
 
       crumbs.push({ label, href, isLast });
     });
 
     return crumbs;
-  }, [pathname, labels, categoryName, categoryUid, categoryParamName]);
+  }, [pathname, labels, category, categoryParamName]);
 }
