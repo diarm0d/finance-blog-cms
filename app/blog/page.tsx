@@ -11,6 +11,7 @@ import BlogList from "./BlogList";
 import { asImageSrc, asText } from "@prismicio/client";
 
 export const revalidate = 0;
+const PAGE_SIZE = 3;
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -19,11 +20,11 @@ export default async function Page(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const pagination = searchParams.page ? Number(searchParams.page) : 1;
   const category = searchParams.category as string | undefined;
-  const PAGE_SIZE = 3;
 
   const page = await client.getSingle("blog_home").catch(() => notFound());
   const categories = await client.getAllByType("category");
   const blogPosts = await getBlogPosts(PAGE_SIZE, pagination, category);
+
 
   return (
     <main className="bg-gray-100">
@@ -34,7 +35,7 @@ export default async function Page(props: { searchParams: SearchParams }) {
             components={blogComponents}
           />
           <PrismicRichText field={page.data.caption} />
-          {/* Carosel comp goes here mapping out page.data.featured_blogs */}
+          {/*TO DO: Carosel comp goes here mapping out page.data.featured_blogs with CARD comp size lg */}
         </div>
       </section>
       <section className="mx-2 md:mx-auto mt-8 max-w-5xl">
@@ -42,7 +43,6 @@ export default async function Page(props: { searchParams: SearchParams }) {
           <PrismicRichText
             field={page.data.pagination_title}
             components={blogComponents}
-            // className="mb-4 text-2xl font-semibold"
           />
           <Suspense
             fallback={
@@ -69,19 +69,25 @@ export default async function Page(props: { searchParams: SearchParams }) {
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; category?: string }>;
+}): Promise<Metadata> {
+  const sParams = await searchParams;
   const client = createClient();
   const page = await client.getSingle("blog_home").catch(() => notFound());
   const settings = await client.getSingle("global_settings");
 
-  // Image Optimization Logic
+  const currentPage = Number(sParams.page) || 1;
+  const category = sParams.category as string | undefined;
+
   const rawImage =
     asImageSrc(page.data.meta_image) || asImageSrc(settings.data.site_image);
   const ogImage = rawImage
     ? `${rawImage}&w=1200&h=630&fit=crop&q=80`
     : undefined;
 
-  // Title Hierarchy
   const title =
     page.data.meta_title ||
     asText(page.data.title) ||
@@ -90,6 +96,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     page.data.meta_description || settings.data.site_description || undefined;
 
+  const blogPosts = await getBlogPosts(PAGE_SIZE, currentPage, category);
+  const totalPages = blogPosts.total_pages;
+
+  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/blog`;
+  const categoryQuery = category ? `&category=${category}` : "";
+
+  const otherLinks: Record<string, string> = {};
+
+  if (currentPage > 1) {
+    const prevPage = currentPage - 1;
+    otherLinks["prev"] = `${baseUrl}?page=${prevPage}${categoryQuery}`;
+  }
+
+  if (currentPage < totalPages) {
+    const nextPage = currentPage + 1;
+    otherLinks["next"] = `${baseUrl}?page=${nextPage}${categoryQuery}`;
+  }
   return {
     title,
     description,
@@ -114,6 +137,7 @@ export async function generateMetadata(): Promise<Metadata> {
       creator: "@getmoss",
     },
     other: {
+      ...otherLinks,
       citation_title: title,
       citation_author: "Moss Team",
       citation_publication_date: page.first_publication_date,

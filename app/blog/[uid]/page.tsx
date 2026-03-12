@@ -103,7 +103,6 @@ export async function generateMetadata({
       page.data.category.data?.name) ||
     "Finance";
 
-  // Canonical URL
   const canonicalUrl =
     asLink(page.data.canonical) ||
     `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${uid}`;
@@ -145,6 +144,12 @@ export async function generateMetadata({
       description,
       images: ogImage ? [ogImage] : [],
       creator: "@getmoss",
+    },
+    other: {
+      citation_title: title,
+      citation_author: authorName,
+      citation_publication_date: page.first_publication_date,
+      citation_online_date: page.last_publication_date,
     },
   };
 }
