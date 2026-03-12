@@ -1,14 +1,17 @@
 {
   "format": "page",
   "id": "blog_home",
+  "label": "Blog Home",
+  "repeatable": false,
+  "status": true,
   "json": {
     "Main": {
       "slices": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
         "config": {
           "choices": {}
-        },
-        "fieldset": "Slice Zone",
-        "type": "Slices"
+        }
       }
     },
     "SEO & Metadata": {
@@ -36,10 +39,70 @@
           "thumbnails": []
         },
         "type": "Image"
+      },
+      "title": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Title",
+          "placeholder": "",
+          "allowTargetBlank": false,
+          "single": "heading1"
+        }
+      },
+      "caption": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Caption",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph"
+        }
+      },
+      "pagination_title": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Pagination Title",
+          "placeholder": "",
+          "allowTargetBlank": false,
+          "single": "heading2"
+        }
+      },
+      "featured_blogs": {
+        "type": "Group",
+        "config": {
+          "label": "Featured Blogs",
+          "repeat": true,
+          "fields": {
+            "featured": {
+              "type": "Link",
+              "config": {
+                "label": "Featured",
+                "select": "document",
+                "repeat": false,
+                "customtypes": [
+                  {
+                    "id": "blog_page",
+                    "fields": [
+                      "title",
+                      "snippet",
+                      {
+                        "id": "category",
+                        "customtypes": [
+                          {
+                            "id": "category",
+                            "fields": ["name"]
+                          }
+                        ]
+                      },
+                      "meta_image"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
-  },
-  "label": "Blog Home",
-  "repeatable": false,
-  "status": true
+  }
 }

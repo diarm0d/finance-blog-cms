@@ -3,23 +3,22 @@ import {
   Select as ArkSelect,
   type SelectRootProps,
 } from "@ark-ui/react/select";
-import { ChevronsUpDownIcon, XIcon } from "lucide-react";
+import { ChevronsUpDownIcon } from "lucide-react";
+import { PropsWithChildren } from "react";
 
-export type SelectProps = SelectRootProps<{
-  label: string;
-  value: string;
-}> & {
-  placeholder?: string;
-};
+export type SelectProps<T> = PropsWithChildren<
+  SelectRootProps<T> & {
+    placeholder?: string;
+  }
+>;
 
-export const Select = (props: SelectProps) => {
-  const { placeholder, collection, ...rest } = props;
+export const Select = <T,>(props: SelectProps<T>) => {
+  const { placeholder, children, ...rest } = props;
 
   return (
     <ArkSelect.Root
-      collection={collection}
       {...rest}
-      className="bg-white border border-gray-200 rounded-sm w-1/4 p-1 mb-4"
+      className="bg-white border border-gray-200 rounded-sm w-full md:w-1/4 p-1 mb-4"
     >
       <ArkSelect.Control className="w-full h-full">
         <div className="flex justify-between items-center">
@@ -32,28 +31,12 @@ export const Select = (props: SelectProps) => {
               <ChevronsUpDownIcon className="text-gray-400" />
             </ArkSelect.Indicator>
           </ArkSelect.Trigger>
-          <div>
-            <ArkSelect.ClearTrigger>
-              <XIcon />
-            </ArkSelect.ClearTrigger>
-          </div>
         </div>
       </ArkSelect.Control>
       <Portal>
         <ArkSelect.Positioner>
-          <ArkSelect.Content className="bg-white border border-gray-200 w-[150px] rounded-sm">
-            <ArkSelect.ItemGroup>
-              {collection?.items.map((item) => (
-                <ArkSelect.Item
-                  key={item.value}
-                  item={item}
-                  className="py-2 px-4 hover:bg-gray-200"
-                >
-                  <ArkSelect.ItemText>{item.label}</ArkSelect.ItemText>
-                  <ArkSelect.ItemIndicator>✓</ArkSelect.ItemIndicator>
-                </ArkSelect.Item>
-              ))}
-            </ArkSelect.ItemGroup>
+          <ArkSelect.Content className="bg-white border border-gray-200 w-full rounded-sm">
+            {children}
           </ArkSelect.Content>
         </ArkSelect.Positioner>
       </Portal>

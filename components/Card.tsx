@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 import { PrismicNextImage } from "@prismicio/next";
 import Pill from "./Pill";
@@ -5,6 +6,7 @@ import Button from "./Button";
 import Heading from "./Heading";
 import { ImageField } from "@prismicio/client";
 import Link from "next/link";
+import React from "react";
 
 export interface CardProps {
   className?: string;
@@ -38,7 +40,7 @@ export default function Card({
     <Link
       href={href}
       className={clsx(
-        "font-semibold rounded-sm inline-block bg-white border border-gray-200",
+        "font-semibold rounded-sm inline-block bg-white border border-gray-200  hover:bg-gray-50",
         size === "lg" && "text-md px-3 py-3.5",
         size === "md" && "text-sm px-2 py-2.5",
         className,
@@ -71,7 +73,10 @@ export default function Card({
         <div className="mb-4 font-medium text-sm text-gray-500">
           {description}
         </div>
-        <Button variant="primary" href={href}>
+        <Button
+          variant="primary"
+          href={href}
+        >
           {buttonCta}
         </Button>
       </div>
