@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/prismicio";
 
-export const dynamic = "force-dynamic"; // Ensure it's never cached
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const startTime = Date.now();
   
   try {
     const client = createClient();
-    
-    // 1. Dependency Check: Can we talk to Prismic?
-    // We do a lightweight 'repository' fetch to check connectivity
     await client.getRepository();
 
     return NextResponse.json(
@@ -26,7 +23,7 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    // 2. Failure Reporting
+
     return NextResponse.json(
       {
         status: "unhealthy",
