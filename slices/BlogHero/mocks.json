@@ -54,10 +54,13 @@
 					"id": "mock_document_id"
 				}
 			},
-			"category": {
-				"__TYPE__": "FieldContent",
-				"value": "AI & Intelligence",
-				"type": "Select"
+			"blog_category": {
+				"__TYPE__": "LinkContent",
+				"key": "4aa08144-4f19-4aff-a3a2-818899b8d63b",
+				"value": {
+					"__TYPE__": "DocumentLink",
+					"id": "mock_document_id"
+				}
 			}
 		},
 		"items": []
