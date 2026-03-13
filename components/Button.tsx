@@ -40,7 +40,7 @@ export default function Button({
       {...rest}
     >
       <span className="font-medium">{children}</span>
-      <div className="bg-[#B9FF3F] p-1.5">
+      <div className="bg-moss-green p-1.5">
         <ArrowRight size={18} className="text-black" />
       </div>
     </button>
