@@ -14,9 +14,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check required secrets
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "❌ NEXT_PUBLIC_SITE_URL secret is not set. Add it in Settings → Secrets → Actions."
+            exit 1
+          fi
+          echo "✅ Site URL: $SITE_URL"
+        env:
+          SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun --collect.url="${{ secrets.NEXT_PUBLIC_SITE_URL }}/en-us/blog"
+          lhci autorun --collect.url="$SITE_URL/en-us/blog"
         env:
+          SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
