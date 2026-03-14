@@ -20,7 +20,7 @@ export default function Pill({
       className={clsx(
         "font-semibold rounded-sm inline-block",
         size === "lg" && "text-md px-3.5 py-3",
-        size === "md" && "text-sm px-2.5 py-2",
+        size === "md" && "text-xs px-2.5 py-1.5",
         size === "sm" && "text-xs px-1.5 py-1",
         variant === "featured" && "bg-blue-400 text-white",
         variant === "category" && "bg-blue-100 text-blue-600",

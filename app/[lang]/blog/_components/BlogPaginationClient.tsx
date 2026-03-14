@@ -26,7 +26,7 @@ function BlogPaginationClient({
   };
 
   return (
-    <div className="mt-4 flex w-full justify-center">
+    <div className="mt-12 flex w-full justify-center">
       <Pagination
         count={count}
         pageSize={pageSize}

@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@theme {
+  --color-moss-green: #B9FF3F;
+
+  --animate-indicator-fill: indicator-fill 5000ms linear forwards;
+
+  @keyframes indicator-fill {
+    from { translate: -100% 0; }
+    to   { translate: 0% 0; }
+  }
+}
+
 @font-face {
   font-family: "Systemia Test";
   src: url("https://db.onlinewebfonts.com/t/15b21b9548898a603f935f6fa7e507d8.eot");
