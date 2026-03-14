@@ -9,8 +9,9 @@ import { CategorySelectClient } from "./_components/CategorySelectClient";
 import { Suspense } from "react";
 import BlogList from "./_components/BlogList";
 import { asImageSrc, asText } from "@prismicio/client";
+import { Carousel } from "@/components/Carousel";
 
-export const revalidate = 600;
+export const revalidate = 0;
 const PAGE_SIZE = 3;
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
@@ -21,9 +22,13 @@ export default async function Page(props: { searchParams: SearchParams }) {
   const pagination = searchParams.page ? Number(searchParams.page) : 1;
   const category = searchParams.category as string | undefined;
 
-  const page = await client.getSingle("blog_home").catch(() => notFound());
+  const page = await client
+    .getSingle("blog_home")
+    .catch(() => notFound());
   const categories = await client.getAllByType("category");
   const blogPosts = await getBlogPosts(PAGE_SIZE, pagination, category);
+
+  console.log(page.data.featured_blogs)
 
 
   return (
@@ -35,10 +40,12 @@ export default async function Page(props: { searchParams: SearchParams }) {
             components={blogComponents}
           />
           <PrismicRichText field={page.data.caption} />
-          {/*TO DO: Carosel comp goes here mapping out page.data.featured_blogs with CARD comp size lg */}
+        </div>
+        <div className="w-full mt-8">
+          <Carousel featuredBlogs={page.data.featured_blogs} />
         </div>
       </section>
-      <section className="mx-2 md:mx-auto mt-8 max-w-5xl">
+      <section className="mx-2 md:mx-auto m-8 max-w-5xl">
         <div>
           <PrismicRichText
             field={page.data.pagination_title}
