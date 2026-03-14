@@ -40,8 +40,8 @@ export default function Card({
     <Link
       href={href}
       className={clsx(
-        "font-semibold rounded-sm inline-block bg-white border border-gray-200 ease-in-out hover:bg-gray-50 focus:scale-95",
-        size === "lg" && "text-md p-3.5",
+        "font-semibold rounded-sm inline-block bg-white border border-gray-200 ease-in-out hover:bg-gray-50",
+        size === "lg" && "text-md p-6 min-h-84",
         size === "md" && "text-sm px-2 py-2.5",
         className,
       )}
@@ -49,13 +49,13 @@ export default function Card({
       <div
         className={clsx(
           "grid grid-cols-1",
-          variant === "featured" && "grid-cols-2 gap-12",
+          variant === "featured" && "grid-cols-1 lg:grid-cols-3 gap-12",
         )}
       >
         <div
           className={clsx(
             "relative aspect-video w-full overflow-hidden bg-gray-200 mb-4",
-            variant === "featured" && "md:order-2",
+            variant === "featured" && "hidden lg:block order-2 lg:col-span-2 mb-0",
           )}
         >
           <PrismicNextImage
@@ -91,16 +91,40 @@ export default function Card({
               </div>
             )}
           </div>
-          <div
-            className={clsx(
-              variant === "featured" && "m-w-3/4",
-            )}
-          >
-            <Heading size="md" className="text-lg mb-4">
+          <div>
+            <Heading
+              size="md"
+              className={clsx("text-lg mb-4", variant === "featured" && "mb-8")}
+            >
               {title}
             </Heading>
-            <div className="mb-4 font-medium text-sm text-gray-500">
+            <div
+              className={clsx(
+                "mb-4 font-medium text-sm text-gray-500",
+                variant === "featured" && "mb-4",
+              )}
+            >
               {description}
+            </div>
+            <div
+              className={clsx(
+                "relative aspect-video w-full overflow-hidden bg-gray-200 mb-4",
+                variant === "featured" && "lg:hidden",
+                variant === "primary" && "hidden",
+              )}
+            >
+              <PrismicNextImage
+                field={image}
+                className="rounded-sm object-cover"
+                fill
+                imgixParams={{
+                  ar: "16:9",
+                  fit: "crop",
+                  auto: ["format", "compress"],
+                  q: 80,
+                }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 30vw"
+              />
             </div>
             <Button variant="primary" href={href}>
               {buttonCta}

@@ -9,13 +9,14 @@ import { CategorySelectClient } from "./_components/CategorySelectClient";
 import { Suspense } from "react";
 import BlogList from "./_components/BlogList";
 import { asImageSrc, asText } from "@prismicio/client";
-import { Carousel } from "@/components/Carousel";
+import BlogCarousel from "./_components/BlogCarousel";
 import { getLocales } from "@/utils/getLocales";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getTranslations } from "@/lib/i18n";
 
 export const revalidate = 0;
 const PAGE_SIZE = 3;
+const AUTOPLAY_DELAY = 5000;
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -40,39 +41,50 @@ export default async function Page(props: {
   const locales = await getLocales(page, client);
 
   return (
-    <main className="bg-gray-100">
-      <nav className="mx-2 md:mx-auto mt-4 max-w-5xl">
+    <main className="bg-gray-100 overflow-x-hidden">
+      <nav className="mx-2 md:mx-auto mt-2 lg:mt-4 max-w-5xl">
         <LanguageSwitcher locales={locales} />
       </nav>
-      <section className="mx-2 md:mx-auto mt-12 max-w-5xl">
-        <div className="flex justify-between">
+      <section className="mx-2 md:mx-auto mt-4 lg:mt-12 max-w-5xl">
+        <div className="block gap-2 lg:flex lg:justify-between">
           <PrismicRichText
             field={page.data.title}
             components={blogComponents}
           />
-          <PrismicRichText field={page.data.caption} />
+          <div className="hidden lg:block">
+            <PrismicRichText field={page.data.caption} />
+          </div>
         </div>
-        <div className="w-full mt-8">
-          <Carousel featuredBlogs={page.data.featured_blogs} />
-        </div>
+        {page.data.featured_blogs && (
+          <div className="w-full mt-4 lg:mt-8">
+            <BlogCarousel
+              featuredBlogs={page.data.featured_blogs}
+              slidesPerPage={1.1}
+              spacing="16px"
+              autoplay={{ delay: AUTOPLAY_DELAY }}
+            />
+          </div>
+        )}
       </section>
-      <section className="mx-2 md:mx-auto m-8 max-w-5xl">
-        <div>
+      <section className="mx-2 md:mx-auto m-12 max-w-5xl">
+        <div className="mb-6">
           <PrismicRichText
             field={page.data.pagination_title}
             components={blogComponents}
           />
-          <Suspense
-            fallback={
-              <div className="h-10.5 mb-4 w-48 animate-pulse bg-gray-200 rounded-md" />
-            }
-          >
-            <CategorySelectClient
-              categories={categories}
-              placeholder={t.blog.categoriesPlaceholder}
-              allLabel={t.blog.allCategories}
-            />
-          </Suspense>
+          <div className="mb-4 lg:mb-12">
+            <Suspense
+              fallback={
+                <div className="h-10.5 w-48 animate-pulse bg-gray-200 rounded-md" />
+              }
+            >
+              <CategorySelectClient
+                categories={categories}
+                placeholder={t.blog.categoriesPlaceholder}
+                allLabel={t.blog.allCategories}
+              />
+            </Suspense>
+          </div>
           {blogPosts.results_size > 0 ? (
             <BlogList blogPosts={blogPosts} lang={lang} />
           ) : (
@@ -104,7 +116,9 @@ export async function generateMetadata({
   const locales = await getLocales(page, client);
 
   const hreflangLinks = Object.fromEntries(
-    locales.filter((l) => l.url).map((l) => [l.lang, `${process.env.NEXT_PUBLIC_SITE_URL}${l.url}`])
+    locales
+      .filter((l) => l.url)
+      .map((l) => [l.lang, `${process.env.NEXT_PUBLIC_SITE_URL}${l.url}`]),
   );
   const xDefault = locales.find((l) => l.lang === "en-us");
 
@@ -149,7 +163,9 @@ export async function generateMetadata({
       canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
       languages: {
         ...hreflangLinks,
-        "x-default": xDefault ? `${process.env.NEXT_PUBLIC_SITE_URL}${xDefault.url}` : `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
+        "x-default": xDefault
+          ? `${process.env.NEXT_PUBLIC_SITE_URL}${xDefault.url}`
+          : `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
       },
     },
     openGraph: {

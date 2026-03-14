@@ -12,15 +12,6 @@ const config: Config = {
       colors: {
         "moss-green": "#B9FF3F",
       },
-      keyframes: {
-        "indicator-fill": {
-          from: { transform: "translateX(-100%)" },
-          to: { transform: "translateX(0)" },
-        },
-      },
-      animation: {
-        "indicator-fill": `indicator-fill ${5000}ms linear forwards`,
-      },
     },
   },
   plugins: [],
