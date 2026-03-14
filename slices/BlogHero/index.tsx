@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { Content, isFilled, asDate } from "@prismicio/client";
+import { Content, isFilled } from "@prismicio/client";
+import { formatBlogDate } from "@/lib/formatDate";
 import {
   PrismicRichText,
   PrismicImage,
@@ -19,14 +20,7 @@ export type BlogHeroProps = SliceComponentProps<Content.ArticleHeaderSlice>;
 const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
   const author = slice.primary.author;
   const category = slice.primary.blog_category;
-  const date = asDate(slice.primary.published_date) || Date();
-  const formattedDate = new Date(date)
-    .toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })
-    .toUpperCase();
+  const formattedDate = formatBlogDate(slice.primary.published_date);
   return (
     <Bounded
       data-slice-type={slice.slice_type}

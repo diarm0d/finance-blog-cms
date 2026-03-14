@@ -1,69 +1,151 @@
 import { render, screen } from "@testing-library/react";
-import BlogHero, { BlogHeroProps } from "./index";
-import mock from "./mocks.json";
+import BlogHero from "./index";
+import { PrismicRichText } from "@prismicio/react";
+import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
+import {
+  createBlogHeroSlice,
+  unfilledRelationship,
+} from "@/tests/helpers/fixtures";
 
-// Mock Prismic components to render simple HTML tags
-jest.mock("@prismicio/next", () => ({
-  PrismicNextImage: ({ field }: { field: any }) => (
-    <img alt={field?.alt} src={field?.url} />
-  ),
-}));
-
-jest.mock("@prismicio/react", () => ({
-  PrismicRichText: ({ field }: { field: any }) => {
-    // Navigate the nested mock structure
-    const nodes = Array.isArray(field) ? field : field?.value || [];
-    return (
-      <div>
-        {nodes.map((n, i) => (
-          <h1 key={i}>{n.content?.text || n.text}</h1>
-        ))}
-      </div>
-    );
-  },
-}));
-
+jest.mock("@prismicio/react");
+jest.mock("@prismicio/next");
 jest.mock("@/components/Breadcrumbs/Breadcrumbs", () => ({
-  Breadcrumbs: () => <div data-testid="breadcrumbs" />,
+  Breadcrumbs: jest.fn(() => <div data-testid="breadcrumbs" />),
 }));
+
+const MockedBreadcrumbs = Breadcrumbs as jest.Mock;
 
 describe("BlogHero Slice", () => {
-  const rawMock = mock[0];
-  const slice = rawMock as unknown as BlogHeroProps["slice"];
+  describe("title", () => {
+    it("renders the title text via PrismicRichText", () => {
+      const slice = createBlogHeroSlice({ title: "My Blog Post" });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByText("My Blog Post")).toBeInTheDocument();
+    });
 
-  it("should render the title correctly", () => {
-    render(
-      <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
-    );
-
-  
-    const expectedTitle = rawMock.primary.title.value[0].content.text;
-    expect(screen.getByText(expectedTitle)).toBeInTheDocument();
+    it("passes the title field and blogComponents to PrismicRichText", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect((PrismicRichText as jest.Mock).mock.calls[0][0]).toMatchObject({
+        field: slice.primary.title,
+      });
+    });
   });
 
-  it("should render the header image with alt text", () => {
-    render(
-      <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
-    );
-
-    const image = screen.getByRole("img");
-    expect(image).toHaveAttribute("alt", rawMock.primary.header_image.alt);
-    expect(image).toHaveAttribute("src", rawMock.primary.header_image.url);
+  describe("header image", () => {
+    it("renders the header image with correct alt text and src", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      const img = screen.getByTestId("prismic-next-image");
+      expect(img).toHaveAttribute("alt", "Test header image");
+      expect(img).toHaveAttribute("src", "https://example.com/header.jpg");
+    });
   });
 
-  it("should render the reading time", () => {
-    render(
-      <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
-    );
-
-    const readingTime = `${rawMock.primary.reading_time.value} MIN READ`;
-    expect(screen.getByText(new RegExp(readingTime, "i"))).toBeInTheDocument();
+  describe("reading time", () => {
+    it("renders the reading time", () => {
+      const slice = createBlogHeroSlice({ readingTime: "7" });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByText(/7 MIN READ/i)).toBeInTheDocument();
+    });
   });
 
-  it("should render the breadcrumbs", () => {
-    render(
-      <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
-    );
-    expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument();
+  describe("breadcrumbs", () => {
+    it("renders the Breadcrumbs component", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument();
+    });
+
+    it("passes the category name to Breadcrumbs when filled", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(MockedBreadcrumbs.mock.calls[0][0]).toMatchObject({
+        category: "Banking & Finance",
+      });
+    });
+
+    it("passes undefined to Breadcrumbs when category is unfilled", () => {
+      const slice = createBlogHeroSlice({ category: unfilledRelationship });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(MockedBreadcrumbs.mock.calls[0][0].category).toBeUndefined();
+    });
+  });
+
+  describe("author section", () => {
+    it("renders author name when relationship is filled", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByText("Henry Bewicke")).toBeInTheDocument();
+    });
+
+    it("renders 'Written By' label when author is filled", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByText("Written By")).toBeInTheDocument();
+    });
+
+    it("renders author avatar when author is filled", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByTestId("prismic-image")).toHaveAttribute(
+        "alt",
+        "Henry Bewicke avatar",
+      );
+    });
+
+    it("does not render the author block when relationship is unfilled", () => {
+      const slice = createBlogHeroSlice({ author: unfilledRelationship });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.queryByText("Written By")).not.toBeInTheDocument();
+      expect(screen.queryByText("Henry Bewicke")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("category metadata", () => {
+    it("renders category name in the metadata row when filled", () => {
+      const slice = createBlogHeroSlice();
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      // Category appears inside the author block metadata row
+      expect(screen.getByText(/banking & finance/i)).toBeInTheDocument();
+    });
+
+    it("does not render category metadata when author block is hidden", () => {
+      const slice = createBlogHeroSlice({ author: unfilledRelationship });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.queryByText(/banking & finance/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("published date", () => {
+    it("renders the formatted date in the metadata row", () => {
+      const slice = createBlogHeroSlice({ publishedDate: "2024-03-14" });
+      render(<BlogHero slice={slice} index={0} slices={[]} context={undefined} />);
+      expect(screen.getByText("MARCH 14, 2024")).toBeInTheDocument();
+    });
+  });
+
+  describe("slice data attributes", () => {
+    it("sets data-slice-type on the root element", () => {
+      const slice = createBlogHeroSlice();
+      const { container } = render(
+        <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
+      );
+      expect(container.querySelector("section")).toHaveAttribute(
+        "data-slice-type",
+        "article_header",
+      );
+    });
+
+    it("sets data-slice-variation on the root element", () => {
+      const slice = createBlogHeroSlice();
+      const { container } = render(
+        <BlogHero slice={slice} index={0} slices={[]} context={undefined} />,
+      );
+      expect(container.querySelector("section")).toHaveAttribute(
+        "data-slice-variation",
+        "default",
+      );
+    });
   });
 });

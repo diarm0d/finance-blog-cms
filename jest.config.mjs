@@ -12,6 +12,7 @@ const config = {
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jest-environment-jsdom',
+  clearMocks: true,
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   }
