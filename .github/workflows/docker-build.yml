@@ -1,0 +1,67 @@
+name: Docker Build
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docker/**"
+      - "app/**"
+      - "components/**"
+      - "slices/**"
+      - "lib/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "next.config.ts"
+
+jobs:
+  # Development image has no build step, so no env secrets needed.
+  build-development:
+    name: Build (development)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build development image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/development/Dockerfile
+          push: false
+          cache-from: type=gha,scope=development
+          cache-to: type=gha,mode=max,scope=development
+
+  # Staging and production run `next build` inside Docker via a mounted
+  # secret, so we inject the env file from a GitHub secret.
+  # Set up: go to repo Settings → Secrets → Actions and add ENV_FILE
+  # with the contents of your .env.production file.
+  build-production-environments:
+    name: Build (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [staging, production]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Write env file from secret
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Build ${{ matrix.environment }} image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/${{ matrix.environment }}/Dockerfile
+          push: false
+          # Pass the .env as a Docker secret — matches --mount=type=secret,id=env-file in the Dockerfile
+          secrets: |
+            env-file=${{ github.workspace }}/.env
+          cache-from: type=gha,scope=${{ matrix.environment }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.environment }}

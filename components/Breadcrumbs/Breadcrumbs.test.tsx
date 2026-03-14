@@ -1,6 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { Breadcrumbs } from "./Breadcrumbs";
 
+jest.mock("next/navigation", () => ({
+  useParams: jest.fn(() => ({ lang: "en-us" })),
+}));
+
 jest.mock("./useBreadcrumbs");
 
 import { useBreadcrumbs } from "./useBreadcrumbs";

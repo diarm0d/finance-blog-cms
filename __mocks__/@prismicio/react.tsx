@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import React from "react";
 
 export const PrismicRichText = jest.fn(({ field }: { field: any }) => {

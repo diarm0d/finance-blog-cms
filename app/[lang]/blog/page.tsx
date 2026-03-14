@@ -14,7 +14,7 @@ import { getLocales } from "@/utils/getLocales";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getTranslations } from "@/lib/i18n";
 
-export const revalidate = 0;
+export const revalidate = 500;
 const PAGE_SIZE = 3;
 const AUTOPLAY_DELAY = 5000;
 
