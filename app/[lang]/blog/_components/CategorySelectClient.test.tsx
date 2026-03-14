@@ -16,6 +16,7 @@ type WithChildren = { children?: ReactNode };
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(),
+  usePathname: jest.fn(() => "/en-us/blog"),
 }));
 
 let capturedOnValueChange: ((details: { value: string[] }) => void) | undefined;
@@ -78,7 +79,7 @@ describe("CategorySelectClient", () => {
     it("pushes to /blog with the selected category and resets page to 1", () => {
       render(<CategorySelectClient categories={categories} />);
       act(() => { capturedOnValueChange?.({ value: ["technology"] }); });
-      expect(mockPush).toHaveBeenCalledWith("/blog?category=technology&page=1");
+      expect(mockPush).toHaveBeenCalledWith("/en-us/blog?category=technology&page=1");
     });
 
     it("resets page to 1 regardless of the current page", () => {
@@ -104,7 +105,7 @@ describe("CategorySelectClient", () => {
     it("works with the 'all' value", () => {
       render(<CategorySelectClient categories={categories} />);
       act(() => { capturedOnValueChange?.({ value: ["all"] }); });
-      expect(mockPush).toHaveBeenCalledWith("/blog?category=all&page=1");
+      expect(mockPush).toHaveBeenCalledWith("/en-us/blog?category=all&page=1");
     });
   });
 });
