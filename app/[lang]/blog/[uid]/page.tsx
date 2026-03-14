@@ -4,23 +4,31 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { asLink, isFilled, asImageSrc } from "@prismicio/client";
+import { getLocales } from "@/utils/getLocales";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import Bounded from '@/components/Bounded';
 
-type Params = { uid: string };
+
+
+type Params = { uid: string; lang: string };
 
 export default async function BlogPage({
   params,
 }: {
   params: Promise<Params>;
 }) {
-  const { uid } = await params;
+  const { uid, lang } = await params;
   const client = createClient();
   const page = await client
     .getByUID("blog_page", uid, {
+      lang,
       fetchLinks: ["category.name", "category.uid,"],
     })
     .catch(() => notFound());
 
   const settings = await client.getSingle("global_settings");
+
+  const locales = await getLocales(page, client);
 
   const title =
     page.data.meta_title ||
@@ -46,16 +54,6 @@ export default async function BlogPage({
           logo: { "@type": "ImageObject", url: "https://getmoss.com/logo.png" },
         },
       },
-
-      // Only add FAQ schema if the article actually has FAQs
-      // ...(faqs.length > 0
-      //   ? [
-      //       {
-      //         "@type": "FAQPage",
-      //         mainEntity: faqs,
-      //       },
-      //     ]
-      //   : []),
     ],
   };
 
@@ -65,7 +63,10 @@ export default async function BlogPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SliceZone slices={page.data.slices} components={components} />
+      <Bounded>
+        <LanguageSwitcher locales={locales} />
+      </Bounded>
+      <SliceZone slices={page.data.slices} components={components} context={{ lang }} />
     </>
   );
 }
@@ -75,10 +76,16 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { uid } = await params;
+  const { uid, lang } = await params;
   const client = createClient();
-  const page = await client.getByUID("blog_page", uid);
+  const page = await client.getByUID("blog_page", uid, { lang });
   const settings = await client.getSingle("global_settings");
+  const locales = await getLocales(page, client);
+
+  const hreflangLinks = Object.fromEntries(
+    locales.filter((l) => l.url).map((l) => [l.lang, `${process.env.NEXT_PUBLIC_SITE_URL}${l.url}`])
+  );
+  const xDefault = locales.find((l) => l.lang === "en-us");
 
   const rawImage =
     asImageSrc(page.data.meta_image) || asImageSrc(settings.data.site_image);
@@ -123,6 +130,10 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: canonicalUrl,
+      languages: {
+        ...hreflangLinks,
+        "x-default": xDefault ? `${process.env.NEXT_PUBLIC_SITE_URL}${xDefault.url}` : canonicalUrl,
+      },
     },
     openGraph: {
       title,
@@ -158,5 +169,5 @@ export async function generateStaticParams() {
   const client = createClient();
   const pages = await client.getAllByType("blog_page");
 
-  return pages.map((page) => ({ uid: page.uid }));
+  return pages.map((page) => ({ uid: page.uid, lang: page.lang }));
 }

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useBreadcrumbs } from "./useBreadcrumbs";
 import { ChevronRight } from "lucide-react";
 import clsx from "clsx";
+import { useParams } from "next/navigation";
+import { getTranslations } from "@/lib/i18n";
 
 type Props = {
   category?: string;
@@ -16,12 +18,16 @@ export function Breadcrumbs({
   className,
   ...rest
 }: Props) {
+  const params = useParams();
+  const lang = typeof params.lang === "string" ? params.lang : "en-us";
+  const t = getTranslations(lang);
+  const labels = t.breadcrumbs;
+
   const crumbs = useBreadcrumbs({
     category,
     categoryParamName: "category",
-    labels: {
-      blog: "Overview",
-    },
+    labels,
+    excludeSegments: [lang],
   });
 
   return (
