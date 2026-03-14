@@ -1,0 +1,37 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Vercel automatically deploys a preview for every PR.
+      # This step waits for that deployment to be ready, then outputs
+      # the preview URL so Lighthouse can audit the real rendered site
+      # rather than a local build — no Prismic credentials needed in CI.
+      - name: Wait for Vercel preview deployment
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        id: vercel_preview
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 120
+        # On pushes to main, Vercel deploys to production.
+        # Fall back to the SITE_URL secret when there's no preview URL.
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          # Use the Vercel preview URL on PRs, fall back to production URL on main.
+          LHCI_SITE_URL: ${{ steps.vercel_preview.outputs.url || secrets.NEXT_PUBLIC_SITE_URL }}
