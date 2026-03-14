@@ -12,6 +12,7 @@ export type UseBreadcrumbsOptions = {
   labels?: Record<string, string>;
   category?: string;
   categoryParamName?: string;
+  excludeSegments?: string[];
 };
 
 function capitalize(value: string) {
@@ -20,13 +21,13 @@ function capitalize(value: string) {
 }
 
 export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
-  const { labels = {}, category, categoryParamName = 'category' } = options
+  const { labels = {}, category, categoryParamName = 'category', excludeSegments = [] } = options
   const pathname = usePathname()
 
   return useMemo(() => {
     if (!pathname) return []
 
-    const segments = pathname.split('/').filter(Boolean)
+    const segments = pathname.split('/').filter(Boolean).filter(s => !excludeSegments.includes(s))
 
     const crumbs: Crumb[] = []
 

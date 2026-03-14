@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Select as ArkSelect } from "@ark-ui/react/select";
 import { Select } from "@/components/Select";
 import { CategoryDocument } from "@/prismicio-types";
@@ -8,17 +8,19 @@ import { createListCollection } from "@ark-ui/react/select";
 export type CategorySelectClientProps = {
   categories: CategoryDocument<string>[];
   placeholder?: string;
+  allLabel?: string;
 };
 
 type Item = { label: string; value: string };
 
 export const CategorySelectClient = (props: CategorySelectClientProps) => {
-  const { categories, placeholder } = props;
+  const { categories, placeholder, allLabel = "All" } = props;
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const categoryOptions = [
-    { label: "All", value: "all" },
+    { label: allLabel, value: "all" },
     ...categories.map((category) => ({
       label: category.data.name as string,
       value: category.uid,
@@ -32,7 +34,7 @@ export const CategorySelectClient = (props: CategorySelectClientProps) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("category", category);
     params.set("page", "1");
-    router.push(`/blog?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (

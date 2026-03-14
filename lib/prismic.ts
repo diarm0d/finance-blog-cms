@@ -5,6 +5,7 @@ export async function getBlogPosts(
   pagesize?: number,
   pagination?: number,
   category?: string,
+  lang?: string,
 ): Promise<prismic.Query<prismic.Content.BlogPageDocument>> {
   const client = createClient({
     fetchOptions: { cache: "no-store" },
@@ -24,6 +25,7 @@ export async function getBlogPosts(
 
   const blogPosts = await client.get({
     filters,
+    lang,
     pageSize: pagesize,
     page: pagination,
     fetchLinks: ["category.name", "category.uid"],
