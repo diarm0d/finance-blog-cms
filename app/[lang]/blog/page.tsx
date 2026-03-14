@@ -10,29 +10,40 @@ import { Suspense } from "react";
 import BlogList from "./_components/BlogList";
 import { asImageSrc, asText } from "@prismicio/client";
 import { Carousel } from "@/components/Carousel";
+import { getLocales } from "@/utils/getLocales";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getTranslations } from "@/lib/i18n";
 
 export const revalidate = 0;
 const PAGE_SIZE = 3;
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default async function Page(props: { searchParams: SearchParams }) {
+export default async function Page(props: {
+  searchParams: SearchParams;
+  params: Promise<{ lang: string }>;
+}) {
   const client = createClient();
-  const searchParams = await props.searchParams;
+  const [searchParams, { lang }] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
   const pagination = searchParams.page ? Number(searchParams.page) : 1;
   const category = searchParams.category as string | undefined;
 
   const page = await client
-    .getSingle("blog_home")
+    .getSingle("blog_home", { lang })
     .catch(() => notFound());
-  const categories = await client.getAllByType("category");
-  const blogPosts = await getBlogPosts(PAGE_SIZE, pagination, category);
-
-  console.log(page.data.featured_blogs)
-
+  const categories = await client.getAllByType("category", { lang });
+  const t = getTranslations(lang);
+  const blogPosts = await getBlogPosts(PAGE_SIZE, pagination, category, lang);
+  const locales = await getLocales(page, client);
 
   return (
     <main className="bg-gray-100">
+      <nav className="mx-2 md:mx-auto mt-4 max-w-5xl">
+        <LanguageSwitcher locales={locales} />
+      </nav>
       <section className="mx-2 md:mx-auto mt-12 max-w-5xl">
         <div className="flex justify-between">
           <PrismicRichText
@@ -58,13 +69,14 @@ export default async function Page(props: { searchParams: SearchParams }) {
           >
             <CategorySelectClient
               categories={categories}
-              placeholder="Categories"
+              placeholder={t.blog.categoriesPlaceholder}
+              allLabel={t.blog.allCategories}
             />
           </Suspense>
           {blogPosts.results_size > 0 ? (
-            <BlogList blogPosts={blogPosts} />
+            <BlogList blogPosts={blogPosts} lang={lang} />
           ) : (
-            <>No blogs on this topic</>
+            <>{t.blog.noResults}</>
           )}
           <BlogPaginationClient
             pageSize={PAGE_SIZE}
@@ -78,13 +90,23 @@ export default async function Page(props: { searchParams: SearchParams }) {
 
 export async function generateMetadata({
   searchParams,
+  params,
 }: {
   searchParams: Promise<{ page?: string; category?: string }>;
+  params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
-  const sParams = await searchParams;
+  const [sParams, { lang }] = await Promise.all([searchParams, params]);
   const client = createClient();
-  const page = await client.getSingle("blog_home").catch(() => notFound());
+  const page = await client
+    .getSingle("blog_home", { lang })
+    .catch(() => notFound());
   const settings = await client.getSingle("global_settings");
+  const locales = await getLocales(page, client);
+
+  const hreflangLinks = Object.fromEntries(
+    locales.filter((l) => l.url).map((l) => [l.lang, `${process.env.NEXT_PUBLIC_SITE_URL}${l.url}`])
+  );
+  const xDefault = locales.find((l) => l.lang === "en-us");
 
   const currentPage = Number(sParams.page) || 1;
   const category = sParams.category as string | undefined;
@@ -103,7 +125,7 @@ export async function generateMetadata({
   const description =
     page.data.meta_description || settings.data.site_description || undefined;
 
-  const blogPosts = await getBlogPosts(PAGE_SIZE, currentPage, category);
+  const blogPosts = await getBlogPosts(PAGE_SIZE, currentPage, category, lang);
   const totalPages = blogPosts.total_pages;
 
   const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/blog`;
@@ -125,6 +147,10 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
+      languages: {
+        ...hreflangLinks,
+        "x-default": xDefault ? `${process.env.NEXT_PUBLIC_SITE_URL}${xDefault.url}` : `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
+      },
     },
     openGraph: {
       title,

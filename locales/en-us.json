@@ -1,0 +1,15 @@
+{
+  "blog": {
+    "categoriesPlaceholder": "Categories",
+    "allCategories": "All",
+    "noResults": "No blogs on this topic",
+    "cta": "Read Story"
+  },
+  "breadcrumbs": {
+    "blog": "Overview"
+  },
+  "blogHero": {
+    "writtenBy": "Written By",
+    "minRead": "MIN READ"
+  }
+}

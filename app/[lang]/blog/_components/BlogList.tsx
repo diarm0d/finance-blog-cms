@@ -2,12 +2,17 @@ import Card from "@/components/Card";
 import Grid from "@/components/Grid";
 import { isFilled } from "@prismicio/client";
 import * as prismic from "@prismicio/client";
+import { getTranslations } from "@/lib/i18n";
 
 type Props = {
   blogPosts: prismic.Query<prismic.Content.BlogPageDocument>;
+  lang: string;
 };
 
-const BlogList = ({blogPosts}: Props) => {
+const BlogList = ({ blogPosts, lang }: Props) => {
+  const t = getTranslations(lang);
+  const buttonCta = t.blog.cta;
+
   return (
     <Grid className="min-h-96">
       {blogPosts.results.map((post) => {
@@ -22,7 +27,7 @@ const BlogList = ({blogPosts}: Props) => {
             description={post.data.snippet ?? ""}
             category={category}
             date={new Date(post.first_publication_date).toLocaleDateString(
-              "en-US",
+              lang,
               {
                 year: "numeric",
                 month: "long",
@@ -30,7 +35,8 @@ const BlogList = ({blogPosts}: Props) => {
               },
             )}
             image={post.data.meta_image}
-            href={`/blog/${post.uid}`}
+            href={post.url ?? `/blog/${post.uid}`}
+            buttonCta={buttonCta}
           />
         );
       })}

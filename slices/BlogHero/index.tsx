@@ -10,14 +10,20 @@ import { PrismicNextImage } from "@prismicio/next";
 import Bounded from "@/components/Bounded";
 import { Breadcrumbs } from "@/components/Breadcrumbs/Breadcrumbs";
 import { blogComponents } from "@/styles/blog/constants";
+import { getTranslations } from "@/lib/i18n";
+
+type BlogHeroContext = { lang?: string };
+
 /**
  * Props for `ArticleHeader`.
  */
-export type BlogHeroProps = SliceComponentProps<Content.ArticleHeaderSlice>;
+export type BlogHeroProps = SliceComponentProps<Content.ArticleHeaderSlice, BlogHeroContext>;
 /**
  * Component for "Article Header" Slices.
  */
-const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
+const BlogHero: FC<BlogHeroProps> = ({ slice, context }) => {
+  const lang = context?.lang ?? "en-us";
+  const t = getTranslations(lang);
   const author = slice.primary.author;
   const category = slice.primary.blog_category;
   const formattedDate = formatBlogDate(slice.primary.published_date);
@@ -54,7 +60,7 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
               />
               <div>
                 <div className="text-sm text-gray-400 font-medium">
-                  Written By
+                  {t.blogHero.writtenBy}
                 </div>
                 <div className="text-sm font-medium">{author.data.name}</div>
               </div>
@@ -65,7 +71,7 @@ const BlogHero: FC<BlogHeroProps> = ({ slice }) => {
               </span>
               <span className="uppercase">{formattedDate}</span>
               <span className="uppercase">
-                {slice.primary.reading_time} MIN READ
+                {slice.primary.reading_time} {t.blogHero.minRead}
               </span>
             </div>
           </div>

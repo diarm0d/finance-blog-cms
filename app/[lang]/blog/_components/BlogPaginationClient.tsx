@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { Pagination } from "@/components/Pagination";
 
@@ -15,13 +15,14 @@ function BlogPaginationClient({
 }: BlogPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
   const handlePageChange = (details: { page: number; pageSize: number }) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", details.page.toString());
-    router.push(`/blog?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
