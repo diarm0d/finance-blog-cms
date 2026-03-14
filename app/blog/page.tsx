@@ -3,14 +3,14 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/prismicio";
 import { PrismicRichText } from "@prismicio/react";
 import { blogComponents } from "@/styles/blog/constants";
-import BlogPaginationClient from "./BlogPaginationClient";
+import BlogPaginationClient from "./_components/BlogPaginationClient";
 import { getBlogPosts } from "@/lib/prismic";
-import { CategorySelectClient } from "./CategorySelectClient";
+import { CategorySelectClient } from "./_components/CategorySelectClient";
 import { Suspense } from "react";
-import BlogList from "./BlogList";
+import BlogList from "./_components/BlogList";
 import { asImageSrc, asText } from "@prismicio/client";
 
-export const revalidate = 0;
+export const revalidate = 600;
 const PAGE_SIZE = 3;
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;

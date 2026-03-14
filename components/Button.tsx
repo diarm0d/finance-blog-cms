@@ -22,8 +22,7 @@ export default function Button({
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    // If you need to prevent default behavior for some reason:
-    // e.preventDefault();
+    e.preventDefault();
     router.push(href);
   };
 
