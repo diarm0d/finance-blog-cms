@@ -17,7 +17,6 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun
+          lhci autorun --collect.url="${{ secrets.NEXT_PUBLIC_SITE_URL }}/en-us/blog"
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}

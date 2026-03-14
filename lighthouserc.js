@@ -2,17 +2,10 @@
 module.exports = {
   ci: {
     collect: {
-      // Test the two key page types: listing and article.
-      // LHCI_SITE_URL is injected from GitHub secrets at runtime.
-      urls: [
-        `${process.env.LHCI_SITE_URL}/en-us/blog`,
-      ],
+      // URL is passed via --collect.url CLI flag in the GitHub Actions workflow.
       // Run 3 times and take the median — single runs can be noisy.
       numberOfRuns: 3,
       settings: {
-        // Simulate a mid-range mobile device on a 4G connection.
-        // This is Lighthouse's default "mobile" preset and reflects
-        // real-world conditions for most users.
         preset: 'desktop',
       },
     },
