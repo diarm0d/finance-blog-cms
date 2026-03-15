@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(),
+  usePathname: jest.fn(() => "/en-us/blog"),
 }));
 
 let capturedOnPageChange: ((details: { page: number; pageSize: number }) => void) | undefined;

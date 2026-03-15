@@ -52,5 +52,5 @@ export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
     })
 
     return crumbs
-  }, [pathname, labels, category, categoryParamName])
+  }, [pathname, labels, category, categoryParamName, excludeSegments])
 }

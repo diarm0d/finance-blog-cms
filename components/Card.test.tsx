@@ -17,6 +17,8 @@ const baseProps: CardProps = {
     alt: "Test image",
     dimensions: { width: 1200, height: 630 },
     copyright: null,
+    id: "test-image-id",
+    edit: { x: 0, y: 0, zoom: 1, background: "transparent" },
   },
 };
 
@@ -58,10 +60,8 @@ describe("Card component", () => {
 
   it("renders the header image", () => {
     render(<Card {...baseProps} />);
-    expect(screen.getByTestId("prismic-next-image")).toHaveAttribute(
-      "alt",
-      "Test image",
-    );
+    const images = screen.getAllByTestId("prismic-next-image");
+    expect(images[0]).toHaveAttribute("alt", "Test image");
   });
 
   describe("primary variant (default)", () => {
