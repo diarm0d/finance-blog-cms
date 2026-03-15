@@ -62,6 +62,7 @@ export default async function Page(props: {
               slidesPerPage={1.1}
               spacing="16px"
               autoplay={{ delay: AUTOPLAY_DELAY }}
+              buttonCta={t.blog.cta}
             />
           </div>
         )}

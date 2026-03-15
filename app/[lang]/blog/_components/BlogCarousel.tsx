@@ -6,9 +6,10 @@ import { type CarouselRootProps } from "@ark-ui/react/carousel";
 
 type Props = {
   featuredBlogs: BlogHomeDocumentData["featured_blogs"];
+  buttonCta?: string;
 } & Omit<CarouselRootProps, "children" | "slideCount">;
 
-export default function BlogCarousel({ featuredBlogs, ...carouselProps }: Props) {
+export default function BlogCarousel({ featuredBlogs, buttonCta, ...carouselProps }: Props) {
   return (
     <Carousel {...carouselProps}>
       {featuredBlogs.map((item, index) => {
@@ -27,6 +28,7 @@ export default function BlogCarousel({ featuredBlogs, ...carouselProps }: Props)
             href={post.url ?? ""}
             date=""
             variant="featured"
+            buttonCta={buttonCta}
           />
         );
       })}
