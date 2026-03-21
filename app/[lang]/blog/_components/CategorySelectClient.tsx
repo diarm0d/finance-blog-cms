@@ -29,10 +29,16 @@ export const CategorySelectClient = (props: CategorySelectClientProps) => {
 
   const collection = createListCollection({ items: categoryOptions });
 
+  const currentCategory = searchParams.get("category") ?? "all";
+
   const handleCategoryChange = (details: { value: string[] }) => {
     const category = details.value[0];
     const params = new URLSearchParams(searchParams.toString());
-    params.set("category", category);
+    if (category === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
     params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -41,6 +47,7 @@ export const CategorySelectClient = (props: CategorySelectClientProps) => {
     <Select<Item>
       placeholder={placeholder}
       collection={collection}
+      value={[currentCategory]}
       onValueChange={handleCategoryChange}
     >
       <ArkSelect.ItemGroup>

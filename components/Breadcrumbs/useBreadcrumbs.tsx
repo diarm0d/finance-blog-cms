@@ -11,6 +11,7 @@ type Crumb = {
 export type UseBreadcrumbsOptions = {
   labels?: Record<string, string>;
   category?: string;
+  categoryUid?: string;
   categoryParamName?: string;
   excludeSegments?: string[];
 };
@@ -21,7 +22,7 @@ function capitalize(value: string) {
 }
 
 export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
-  const { labels = {}, category, categoryParamName = 'category', excludeSegments = [] } = options
+  const { labels = {}, category, categoryUid, categoryParamName = 'category', excludeSegments = [] } = options
   const pathname = usePathname()
 
   return useMemo(() => {
@@ -38,7 +39,7 @@ export function useBreadcrumbs(options: UseBreadcrumbsOptions = {}): Crumb[] {
 
       if (isLast && category) {
         const search = new URLSearchParams({
-          [categoryParamName]: category,
+          [categoryParamName]: categoryUid ?? category,
         }).toString()
         href = `${href}?${search}`
       }

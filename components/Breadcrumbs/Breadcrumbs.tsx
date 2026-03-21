@@ -8,12 +8,14 @@ import { getTranslations } from "@/lib/i18n";
 
 type Props = {
   category?: string;
+  categoryUid?: string;
   categoryParamName?: string;
   className?: string;
 };
 
 export function Breadcrumbs({
   category,
+  categoryUid,
   categoryParamName,
   className,
   ...rest
@@ -25,6 +27,7 @@ export function Breadcrumbs({
 
   const crumbs = useBreadcrumbs({
     category,
+    categoryUid,
     categoryParamName: "category",
     labels,
     excludeSegments: [lang],
@@ -41,7 +44,7 @@ export function Breadcrumbs({
             const baseHref = prevCrumb ? prevCrumb.href : crumb.href;
 
             const search = new URLSearchParams({
-              [categoryParamName]: category,
+              [categoryParamName]: categoryUid ?? category,
             }).toString();
 
             const categoryHref = `${baseHref}?${search}`;

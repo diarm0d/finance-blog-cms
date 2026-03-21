@@ -16,9 +16,9 @@ export async function proxy(request: NextRequest) {
   );
 
   if (pathnameIsMissingLocale && pathname !== "/") {
-    return NextResponse.rewrite(
-      new URL(`/${defaultLocale}${pathname}`, request.url),
-    );
+    const rewriteUrl = new URL(`/${defaultLocale}${pathname}`, request.url);
+    rewriteUrl.search = request.nextUrl.search;
+    return NextResponse.rewrite(rewriteUrl);
   }
 }
 

@@ -27,6 +27,7 @@ const BlogHero: FC<BlogHeroProps> = ({ slice, context }) => {
   const author = slice.primary.author;
   const category = slice.primary.blog_category;
   const formattedDate = formatBlogDate(slice.primary.published_date);
+
   return (
     <Bounded
       data-slice-type={slice.slice_type}
@@ -36,6 +37,9 @@ const BlogHero: FC<BlogHeroProps> = ({ slice, context }) => {
         category={
           (isFilled.contentRelationship(category) && category.data?.name) ||
           undefined
+        }
+        categoryUid={
+          (isFilled.contentRelationship(category) && category.uid) || undefined
         }
         categoryParamName="category"
         className="text-sm mb-4"

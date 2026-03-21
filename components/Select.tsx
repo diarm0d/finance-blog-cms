@@ -35,7 +35,7 @@ export const Select = <T,>(props: SelectProps<T>) => {
       </ArkSelect.Control>
       <Portal>
         <ArkSelect.Positioner>
-          <ArkSelect.Content className="bg-white border border-gray-200 w-full rounded-sm">
+          <ArkSelect.Content className="bg-white border z-10 border-gray-200 w-full rounded-sm">
             {children}
           </ArkSelect.Content>
         </ArkSelect.Positioner>
